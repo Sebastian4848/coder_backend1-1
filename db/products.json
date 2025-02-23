@@ -1,0 +1,135 @@
+[
+    {
+        "id": 1,
+        "title": "Collar de Cuero",
+        "description": "Collar ajustable de cuero para perros medianos y grandes.",
+        "code": "COL001",
+        "price": 12500,
+        "status": true,
+        "stock": 30,
+        "category": "Accesorios",
+        "thumbnails": [
+            "/images/collar1.jpg",
+            "/images/collar2.jpg"
+        ]
+    },
+    {
+        "id": 2,
+        "title": "Correa Retráctil",
+        "description": "Correa retráctil de 5 metros con sistema de bloqueo.",
+        "code": "COR002",
+        "price": 8500,
+        "status": true,
+        "stock": 50,
+        "category": "Accesorios",
+        "thumbnails": [
+            "/images/correa1.jpg"
+        ]
+    },
+    {
+        "id": 3,
+        "title": "Cama para Mascotas",
+        "description": "Cama acolchada para perros y gatos de tamaño mediano.",
+        "code": "CAM003",
+        "price": 21000,
+        "status": true,
+        "stock": 15,
+        "category": "Hogar",
+        "thumbnails": [
+            "/images/cama1.jpg",
+            "/images/cama2.jpg"
+        ]
+    },
+    {
+        "id": 4,
+        "title": "Juguete Mordedor",
+        "description": "Juguete de caucho resistente para perros pequeños.",
+        "code": "JUG004",
+        "price": 4200,
+        "status": true,
+        "stock": 100,
+        "category": "Juguetes",
+        "thumbnails": [
+            "/images/juguete1.jpg"
+        ]
+    },
+    {
+        "id": 5,
+        "title": "Plato de Acero Inoxidable",
+        "description": "Plato resistente de acero inoxidable con base antideslizante.",
+        "code": "PLA005",
+        "price": 6700,
+        "status": true,
+        "stock": 40,
+        "category": "Comida",
+        "thumbnails": [
+            "/images/plato1.jpg"
+        ]
+    },
+    {
+        "id": 6,
+        "title": "Comedero Automático",
+        "description": "Dispensador automático de comida programable para mascotas.",
+        "code": "COM006",
+        "price": 45000,
+        "status": true,
+        "stock": 10,
+        "category": "Comida",
+        "thumbnails": [
+            "/images/comedero1.jpg"
+        ]
+    },
+    {
+        "id": 7,
+        "title": "Transportadora",
+        "description": "Transportadora rígida con ventilación para perros y gatos.",
+        "code": "TRA007",
+        "price": 32000,
+        "status": true,
+        "stock": 20,
+        "category": "Viaje",
+        "thumbnails": [
+            "/images/transportadora1.jpg"
+        ]
+    },
+    {
+        "id": 8,
+        "title": "Champú para Perros",
+        "description": "Champú dermatológico con pH balanceado para perros.",
+        "code": "CHA008",
+        "price": 8900,
+        "status": true,
+        "stock": 35,
+        "category": "Higiene",
+        "thumbnails": [
+            "/images/champu1.jpg"
+        ]
+    },
+    {
+        "id": 9,
+        "title": "Rascador para Gatos",
+        "description": "Rascador de sisal con plataforma para gatos.",
+        "code": "RAS009",
+        "price": 27000,
+        "status": true,
+        "stock": 25,
+        "category": "Juguetes",
+        "thumbnails": [
+            "/images/rascador1.jpg"
+        ]
+    },
+    {
+        "id": 10,
+        "title": "Casa para Mascotas",
+        "description": "Casa de madera para perros pequeños y medianos.",
+        "code": "CAS010",
+        "price": 55000,
+        "status": true,
+        "stock": 5,
+        "category": "Hogar",
+        "thumbnails": [
+            "/images/casa1.jpg",
+            "/images/casa2.jpg"
+        ]
+    }
+]

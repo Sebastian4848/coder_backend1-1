@@ -1,3 +1,7 @@
+const fs = require("fs").promises;
+const path = require("path");
+const productsPath = path.join(__dirname, "db/products.json");
+
 /*
 Crear un proyecto basado en express js, el cual cuente con un servidor que escuche en el puerto 8080. 
 Además de configurar los siguientes endpoints:
@@ -23,81 +27,271 @@ los usuarios.
 */
 const express = require("express");
 const app = express();
+var logger = require("morgan");
 
-// MIDELLWARES
+// db de productos
+const products = require("./db/products.json");
+
+
+//? MIDELLWARES
 app.use(express.json()); //* BODY {vacío} - si implemento express.json() -> {data}
 app.use(express.urlencoded({ extended: true })); //* FORMULARIOS - {vacío}
+app.use(logger("dev"));
 
-// app.get("/", (req, res) => {
-//   res.send("<h1>Pausa hasta las 21:45 y volvemos con más EXPRESS</h1>");
+
+//? CORS CONFIG - DOMINIOS que pueden acceder a esta API
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  //* Definiendo una lista de dominios permitidos
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  next();
+});
+
+
+//? ENDPOINTS - Estamos MODULARIZANDO
+const routes = require("./routes/index");
+app.use("/", routes);
+
+
+// app.get("/products", (req, res) => {
+//   res.status(200).json(products);
+// })
+
+//? ENPOINTS SIN MODULARIZAR
+// app.get("/products/", async (req, res) => {
+//   try {
+//     const data = await fs.readFile(productsPath, "utf-8");
+//     const products = JSON.parse(data);
+//     res.status(200).json(products);
+//     console.log("-----> ", req);
+//   } catch (error) {
+//     res.status(500).json({ error: "Error al obtener productos", details: error.message });
+//   }
 // });
 
-// Datos de prueba
+// app.get("/products/:pid", (req , res) => {
+// const {pid} = req.params;
+// console.log("---------> ", pid);
+// res.status(200).send("holis")
+// })
 
-const users = [
-  {
-    id: 1,
-    nombre: "Juan",
-    apellido: "Perez",
-    edad: 25,
-    genero: "M",
-  },
-  {
-    id: 2,
-    nombre: "Maria",
-    apellido: "Lopez",
-    edad: 30,
-    genero: "F",
-  },
-  {
-    id: 3,
-    nombre: "Pedro",
-    apellido: "Gomez",
-    edad: 35,
-    genero: "M",
-  },
-];
 
-// Rutas
-
-// http://localhost:8080/bienvenida
-app.get("/bienvenida", (req, res) => {
-  res
-    .status(200)
-    .send("<h1 style='color: blue;'>Bienvenido a mi servidor</h1>");
-});
-
-// http://localhost:8080/usuarios
-app.get("/usuarios", (req, res) => {
-  res.status(200).json(users);
-});
-
-// http://localhost:8080/usuarios/2 - x PARAMS ->
-// //* todo lo que llega por PARAMS o QUERY es de tipo string
-app.get("/usuarios/:userId", (req, res) => {
-  const { userId } = req.params;
-  console.log("------> ", userId);
-  const user = users.find((u) => u.id === Number(userId));
-  if (user) {
-    console.log(" in conditional ", user);
-    res.status(200).json({ success: true, user });
-  } else {
-    res.status(400).send("Usuario no encontrado");
+//! GET (OK)
+app.get("/api/products/:pid", async (req, res) => {
+  try {
+    const { pid } = req.params;
+    // console.log("-----> ", req);
+    const product = products.find((product) => product.id === parseInt(pid));
+    if (!product) {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener el producto", details: error.message });
   }
 });
 
-// http://localhost:8080?genero=M
-app.get("/", (req, res) => {
-  const { genero } = req.query;
-  console.log("------> ", req);
-  const resultUsers = users.filter((u) => u.genero === genero);
-  if (resultUsers && resultUsers.length > 0) {
-    console.log(" in conditional ", resultUsers);
-    res.status(200).json({ success: true, users: resultUsers });
-  } else {
-    res.status(400).send("Usuarios no encontrados");
+
+// //? GET SIN MODULARIZAR
+// app.get("/books/:id", (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const book = books.find((book) => book.id === parseInt(id));
+//     if (book) {
+//       res.status(200).json(book);
+//     } else {
+//       res.status(404).send("Libro no encontrado");
+//     }
+//   } catch (error) {
+//     console.error("Error al obtener el libro:", error);
+//     res.status(500).send("Error interno del servidor");
+//   }
+// });
+
+
+//! DELETE (OK)
+app.delete("/api/products/delete-product", (req, res) => {
+  try {
+    const { id } = req.query;
+    console.log(id)
+    const productIndex = products.findIndex((product) => product.id === parseInt(id));
+    if (productIndex !== -1) {
+      products.splice(productIndex, 1);
+      res.status(200).send("Producto eliminado");
+    } else {
+      res.status(404).send("Producto no encontrado");
+    }
+  } catch (error) {
+    console.error("Error al eliminar el producto:", error);
+    res.status(500).send("Error interno del servidor");
   }
-});
+})
+
+
+// //? POST
+// app.post("/books", (req, res) => {
+//   try {
+//     const { title, author, year } = req.body;
+//     const newBook = {
+//       id: books.length + 1,
+//       title,
+//       author,
+//       year,
+//     };
+//     books.push(newBook);
+//     res.status(201).json(newBook);
+//   } catch (error) {
+//     console.error("Error al agregar el libro:", error);
+//     res.status(500).send("Error interno del servidor");
+//   }
+// });
+
+
+// //? DELETE 
+// app.delete("/books/delete-book", (req, res) => {
+//   try {
+//     const { id } = req.query;
+//     const bookIndex = books.findIndex((book) => book.id === parseInt(id));
+//     if (bookIndex !== -1) {
+//       books.splice(bookIndex, 1);
+//       res.status(200).send("Libro eliminado");
+//     } else {
+//       res.status(404).send("Libro no encontrado");
+//     }
+//   } catch (error) {
+//     console.error("Error al eliminar el libro:", error);
+//     res.status(500).send("Error interno del servidor");
+//   }
+// })
+
+
+// //? POST
+// app.post("/books", (req, res) => {
+//   try {
+//     const { title, author, year } = req.body;
+//     const newBook = {
+//       id: books.length + 1,
+//       title,
+//       author,
+//       year,
+//     };
+//     books.push(newBook);
+//     res.status(201).json(newBook);
+//   } catch (error) {
+//     console.error("Error al agregar el libro:", error);
+//     res.status(500).send("Error interno del servidor");
+//   }
+// });
+
+
+// //? PUT
+// app.put("/books/update-book", (req, res) => {
+//   try {
+//     const { id } = req.query;
+//     const { title, author, year } = req.body;
+//     if (!title || !author || !year) {
+//       return res.status(400).send("faltan datos");
+//     }
+//     const bookIndex = books.findIndex((book) => book.id === parseInt(id));
+//     if (bookIndex !== -1) {
+//       // -1 si no lo encuentra y la posicion si lo encuentra
+//       books[bookIndex] = {
+//         id: parseInt(id),
+//         title,
+//         author,
+//         year,
+//       };
+//       res.status(200).json(books[bookIndex]);
+//       // Se puede usar return para cortar la secuencia
+//     } else {
+//       res.status(404).send("Libro no encontrado");
+//     }
+//   } catch (error) {
+//     console.error("Error al actualizar el libro:", error);
+//     res.status(500).send("Error interno del servidor");
+//   }
+// }
+// );
+
+
+// module.exports = app;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// //! Rutas ARCHIVO VIEJO
+
+// // http://localhost:8080/bienvenida
+// app.get("/bienvenida", (req, res) => {
+//   res
+//     .status(200)
+//     .send("<h1 style='color: blue;'>Bienvenido a mi servidor</h1>");
+// });
+
+// // http://localhost:8080/usuarios
+// app.get("/usuarios", (req, res) => {
+//   res.status(200).json(users);
+// });
+
+// // http://localhost:8080/usuarios/2 - x PARAMS ->
+// // //* todo lo que llega por PARAMS o QUERY es de tipo string
+// app.get("/usuarios/:userId", (req, res) => {
+//   const { userId } = req.params;
+//   console.log("------> ", userId);
+//   const user = users.find((u) => u.id === Number(userId));
+//   if (user) {
+//     console.log(" in conditional ", user);
+//     res.status(200).json({ success: true, user });
+//   } else {
+//     res.status(400).send("Usuario no encontrado");
+//   }
+// });
+
+// // http://localhost:8080?genero=M
+// app.get("/", (req, res) => {
+//   const { genero } = req.query;
+//   console.log("------> ", req);
+//   const resultUsers = users.filter((u) => u.genero === genero);
+//   if (resultUsers && resultUsers.length > 0) {
+//     console.log(" in conditional ", resultUsers);
+//     res.status(200).json({ success: true, users: resultUsers });
+//   } else {
+//     res.status(400).send("Usuarios no encontrados");
+//   }
+// });
 
 /*
 Servidor con GET, POST, PUT, DELETE
@@ -128,16 +322,16 @@ Utilizar POSTMAN para probar funcionalidad
 
 */
 
-let frase = "Frase inicial";
+// let frase = "Frase inicial";
 
-app.get("/api/frase", (req, res) => {});
+// app.get("/api/frase", (req, res) => {});
 
-app.get("/api/palabras/:pos", (req, res) => {});
+// app.get("/api/palabras/:pos", (req, res) => {});
 
-app.post("/api/palabras", (req, res) => {});
+// app.post("/api/palabras", (req, res) => {});
 
-app.put("/api/palabras/:pos", (req, res) => {});
+// app.put("/api/palabras/:pos", (req, res) => {});
 
-app.delete("/api/palabras/:pos", (req, res) => {});
+// app.delete("/api/palabras/:pos", (req, res) => {});
 
 module.exports = app;
