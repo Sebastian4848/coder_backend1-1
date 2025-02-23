@@ -129,23 +129,28 @@ app.delete("/api/products/delete-product", (req, res) => {
 })
 
 
-// //? POST
-// app.post("/books", (req, res) => {
-//   try {
-//     const { title, author, year } = req.body;
-//     const newBook = {
-//       id: books.length + 1,
-//       title,
-//       author,
-//       year,
-//     };
-//     books.push(newBook);
-//     res.status(201).json(newBook);
-//   } catch (error) {
-//     console.error("Error al agregar el libro:", error);
-//     res.status(500).send("Error interno del servidor");
-//   }
-// });
+//! POST (OK)
+app.post("/api/products", (req, res) => {
+  try {
+    const { title, description, code, price, status, stock, category, thumbnails } = req.body;
+    const newProduct = {
+      id: products.length + 1,
+      title,
+      description,
+      code,
+      price,
+      status,
+      stock,
+      category,
+      thumbnails
+    };
+    products.push(newProduct);
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.error("Error al agregar el producto:", error);
+    res.status(500).send("Error interno del servidor");
+  }
+});
 
 
 // //? DELETE 
@@ -185,37 +190,52 @@ app.delete("/api/products/delete-product", (req, res) => {
 // });
 
 
-// //? PUT
-// app.put("/books/update-book", (req, res) => {
-//   try {
-//     const { id } = req.query;
-//     const { title, author, year } = req.body;
-//     if (!title || !author || !year) {
-//       return res.status(400).send("faltan datos");
-//     }
-//     const bookIndex = books.findIndex((book) => book.id === parseInt(id));
-//     if (bookIndex !== -1) {
-//       // -1 si no lo encuentra y la posicion si lo encuentra
-//       books[bookIndex] = {
-//         id: parseInt(id),
-//         title,
-//         author,
-//         year,
-//       };
-//       res.status(200).json(books[bookIndex]);
-//       // Se puede usar return para cortar la secuencia
-//     } else {
-//       res.status(404).send("Libro no encontrado");
-//     }
-//   } catch (error) {
-//     console.error("Error al actualizar el libro:", error);
-//     res.status(500).send("Error interno del servidor");
-//   }
-// }
-// );
+//! PUT (OK)
+app.put("/api/products/update-product", (req, res) => {
+  try {
+    const { id } = req.query;
+    const { title, description, code, price, status, stock, category, thumbnails } = req.body;
+    if (!title || !description || !code || !price || !status || !stock || !category || !thumbnails) {
+      return res.status(400).send("faltan datos");
+    }
+    const productIndex = products.findIndex((product) => product.id === parseInt(id));
+    if (productIndex !== -1) {
+      // -1 si no lo encuentra y la posicion si lo encuentra
+      products[productIndex] = {
+        id: parseInt(id),
+        title,
+        description,
+        code,
+        price,
+        status,
+        stock,
+        category,
+        thumbnails
+      };
+      res.status(200).json(products[productIndex]);
+      // Se puede usar return para cortar la secuencia
+    } else {
+      res.status(404).send("Producto no encontrado");
+    }
+  } catch (error) {
+    console.error("Error al actualizar el producto:", error);
+    res.status(500).send("Error interno del servidor");
+  }
+}
+);
 
 
-// module.exports = app;
+//* Route not found
+app.use((req, res) => {
+  res.status(404).send(
+    `<div style='text-align: center; font-family: Arial;'>
+          <h1>404 Not Found</h1>
+          <p>La ruta solicitada no existe</p>
+        </div>`
+  );
+});
+
+module.exports = app;
 
 
 
@@ -334,4 +354,4 @@ Utilizar POSTMAN para probar funcionalidad
 
 // app.delete("/api/palabras/:pos", (req, res) => {});
 
-module.exports = app;
+// module.exports = app;

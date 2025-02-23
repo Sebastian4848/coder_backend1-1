@@ -15,3 +15,4 @@ router.get("/", function (req, res, next) {
 router.use("/api/products", products);
 
 module.exports = router;
+
