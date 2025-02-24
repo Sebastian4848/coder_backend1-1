@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const products = require("./product.route");
+// const cartsRoutes = require("./cart.route");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -13,6 +14,7 @@ router.get("/", function (req, res, next) {
 });
 
 router.use("/api/products", products);
+// router.use("/api/carts", cartsRoutes);
 
 module.exports = router;
 

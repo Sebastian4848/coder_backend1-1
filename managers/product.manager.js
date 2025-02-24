@@ -1,11 +1,32 @@
 const products = require("../db/products.json");
 
-const getAllProducts = () => {
-    return products.length ? products : null
+const getAllProducts = () => {return products.length ? products : null};
+
+const getProduct = (id) => products.find((product) => product.id == id);
+
+const saveProduct = (data) => {
+    const newProduct = { id: products.length + 1, ...data };
+    products.push(newProduct);
+    return newProduct;
 };
 
-module.exports = { getAllProducts };
+const updateProductById = (id, data) => {
+    const index = products.findIndex((product) => product.id === parseInt(id));
+    console.log(id)
+    if (index !== -1) {
+        products[index] = { ...products[index], ...data };
+        return products[index];
+    }
+    return null;
+};
 
-//* Managers son conectores directos con la DB
+const deleteProductById = (id) => {
+    const index = products.findIndex((product) => product.id == id);
+    if (index !== -1) {
+        products.splice(index, 1);
+        return true;
+    }
+    return false;
+};
 
-//* SQL  no SQL  QUERIES (CONSULTAS) -> a la DB
+module.exports = { getAllProducts, getProduct, saveProduct, updateProductById, deleteProductById };
