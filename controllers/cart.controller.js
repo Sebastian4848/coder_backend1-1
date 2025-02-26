@@ -1,4 +1,4 @@
-const CartManager = require("../managers/CartManager");
+const CartManager = require("../managers/cart.manager");
 
 const createCart = async (req, res) => {
     try {

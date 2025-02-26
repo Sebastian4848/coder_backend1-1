@@ -30,21 +30,40 @@ class CartManager {
         return carts.find(cart => cart.id === parseInt(id)) || null;
     }
 
-    async addProductToCart(cid, pid) {
+    // async addProductToCart(cid, pid) {
+    //     const carts = await this.getCarts();
+    //     const cart = carts.find(c => c.id === parseInt(cid));
+    //     if (!cart) return null;
+
+    //     const existingProduct = cart.products.find(p => p.product === parseInt(pid));
+    //     if (existingProduct) {
+    //         existingProduct.quantity += 1;
+    //     } else {
+    //         cart.products.push({ product: parseInt(pid), quantity: 1 });
+    //     }
+
+    //     await this.saveCarts(carts);
+    //     return cart;
+    // }
+
+    async addProductToCart(cid, pid, quantity = 1) {
         const carts = await this.getCarts();
         const cart = carts.find(c => c.id === parseInt(cid));
         if (!cart) return null;
-
-        const existingProduct = cart.products.find(p => p.product === parseInt(pid));
+    
+        const productId = parseInt(pid); // Asegurar que pid siempre sea un número
+        const existingProduct = cart.products.find(p => p.product === productId);
+    
         if (existingProduct) {
-            existingProduct.quantity += 1;
+            existingProduct.quantity += quantity; // Sumar correctamente la cantidad enviada
         } else {
-            cart.products.push({ product: parseInt(pid), quantity: 1 });
+            cart.products.push({ product: productId, quantity });
         }
-
+    
         await this.saveCarts(carts);
         return cart;
     }
+    
 }
 
 module.exports = new CartManager();
