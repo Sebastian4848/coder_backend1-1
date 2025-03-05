@@ -29,6 +29,15 @@ function miMiddleware(req, res, next) {
 
 app.use(miMiddleware);
 
+app.post("/upload/single/:id", upload.single("image"), async (req, res) => {
+  try {
+    console.log("--->", req.file);// En file esta la data de la imagen
+    res.send(`Imagen del usuario guardada`)
+  } catch (error) {
+    res.send(`Imagen Error ${error}`)
+  }
+})
+
 //? CORS CONFIG - DOMINIOS que pueden acceder a esta API
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
