@@ -6,6 +6,11 @@ const app = express();
 var logger = require("morgan");
 const routes = require("./routes/index");
 
+const multer = require("multer");
+
+// Config Multer
+const upload = multer({ dest: "uploads/" });
+
 // db de productos
 const products = require("./db/products.json");
 
