@@ -15,6 +15,14 @@ app.use(express.json()); //* BODY {vacío} - si implemento express.json() -> {da
 app.use(express.urlencoded({ extended: true })); //* FORMULARIOS - {vacío}
 app.use(logger("dev"));
 
+app.use("static", express.static(path.join(__dirname, "public")));
+
+function miMiddleware(req, res, next) {
+  console.log("Time:", Date());
+  next();
+}
+
+app.use(miMiddleware);
 
 //? CORS CONFIG - DOMINIOS que pueden acceder a esta API
 app.use((req, res, next) => {
